@@ -1,3 +1,4 @@
+import { identityNumber } from './../../../../backend/src/idModel';
 import { IdRepository } from "../Repository/idRepository";
 import { IdentityNumber } from "../entities/identityNumber.entity";
 
@@ -6,23 +7,25 @@ export class IdService {
 
   async createService(identityDocument: string): Promise<IdentityNumber> {
     try {
-      let multiplayer: number = 2;
-      const array: string[] = identityDocument.split('');
-      
-      const sum:number = array.reduce( (currentValue,digit) =>{
-      multiplayer = multiplayer === 1 ? multiplayer = 2 : multiplayer = 1;
-      return currentValue + ( parseInt(digit) * multiplayer % 10) + Math.floor(parseInt(digit) * multiplayer / 10)}
-      ,0);
-
       const identityNumber: IdentityNumber = {
         identityDocument,
-        missingNumber : sum % 10 ? String(10 - (sum % 10)) : "0",
+        missingNumber: String(this.findMissingNumber(identityDocument.split(''))),
       };
 
       return this.idRepository.create(identityNumber);
     } catch (error) {
       throw new Error(error);
     }
+  }
+  
+  private findMissingNumber(array:  string[]) : number {
+    return (10 - array.reduce((currentValue, digit, index) => {
+      return (
+        currentValue +
+        parseInt(digit) * ((index % 2) + 1) % 10 +
+        Math.floor((parseInt(digit) * ((index % 2) + 1)) / 10)
+      );
+    }, 0) % 10 );
   }
 }
 

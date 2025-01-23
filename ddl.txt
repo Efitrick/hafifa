@@ -1,0 +1,8 @@
+DROP TABLE IF EXISTS identity_number;
+CREATE table IF NOT EXISTS identity_number(
+uuid uuid DEFAULT uuid_generate_v4() NOT NULL PRIMARY KEY,
+identity_document varchar(8) CHECK (char_length(identity_document) = 8 and identity_document ~ '^\d*$'),
+missing_number varchar(1)  CHECK (char_length(missing_number) <= 1 and missing_number ~ '^\d*$'),
+create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
+)
+

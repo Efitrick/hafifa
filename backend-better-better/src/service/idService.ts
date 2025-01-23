@@ -1,4 +1,4 @@
-import { identityNumber } from './../../../../backend/src/idModel';
+import { identityNumber } from "./../../../../backend/src/idModel";
 import { IdRepository } from "../Repository/idRepository";
 import { IdentityNumber } from "../entities/identityNumber.entity";
 
@@ -9,7 +9,9 @@ export class IdService {
     try {
       const identityNumber: IdentityNumber = {
         identityDocument,
-        missingNumber: String(this.findMissingNumber(identityDocument.split(''))),
+        missingNumber: String(
+          this.findMissingNumber(identityDocument.split(""))
+        ),
       };
 
       return this.idRepository.create(identityNumber);
@@ -17,15 +19,19 @@ export class IdService {
       throw new Error(error);
     }
   }
-  
-  private findMissingNumber(array:  string[]) : number {
-    return (10 - array.reduce((currentValue, digit, index) => {
-      return (
-        currentValue +
-        parseInt(digit) * ((index % 2) + 1) % 10 +
-        Math.floor((parseInt(digit) * ((index % 2) + 1)) / 10)
-      );
-    }, 0) % 10 );
+
+  private findMissingNumber(array: string[]): number {
+    return (
+      10 -
+      (array.reduce((currentValue, digit, index) => {
+        return (
+          currentValue +
+          ((parseInt(digit) * ((index % 2) + 1)) % 10) +
+          Math.floor((parseInt(digit) * ((index % 2) + 1)) / 10)
+        );
+      }, 0) %
+        10)
+    );
   }
 }
 
